@@ -6,30 +6,34 @@ This guide covers matching the colors of the standalone **cava** binary
 (the actual `cava` program, run on its own — not embedded in another app)
 to your wallpaper via pywal16.
 
-If you're looking for rmpc's built-in `Cava` pane instead, see
-[RMPC_SETUP.md](RMPC_SETUP.md) — that's a separate, embedded
-reimplementation with its own config format, covered below.
+If you're looking for rmpc's `Cava` pane instead, see
+[RMPC_SETUP.md](RMPC_SETUP.md) — rmpc still shells out to the real `cava`
+binary under the hood (it must be installed and on `$PATH`; see
+https://rmpc.mierak.dev/configuration/cava/), but rmpc supplies its own
+config/theme for that pane rather than using `cava`'s own config file.
+That setup is covered in RMPC_SETUP.md, not here.
 
 ### What This Achieves
 - Standalone `cava`'s color gradient automatically matches your wallpaper
 - Updates happen automatically when you run `wal -i image.png`
-- Stays visually in sync with rmpc's embedded Cava pane, if you use both
+- Stays visually in sync with rmpc's `Cava` pane, if you use both
 
 ---
 
 ## Why Two Separate Configs?
 
-rmpc's `Cava` pane is **not** the real `cava` binary — it's an embedded
-reimplementation configured entirely inside `~/.config/rmpc/config.ron`
-(RON format; see the `cava: (...)` block in [RMPC_SETUP.md](RMPC_SETUP.md)).
-The actual `cava` program reads its own INI-style config at
-`~/.config/cava/config`.
+Both rmpc's `Cava` pane and this guide's standalone setup ultimately run the
+same `cava` binary — but rmpc feeds it settings from its own
+`~/.config/rmpc/config.ron` (RON format; see the `cava: (...)` block in
+[RMPC_SETUP.md](RMPC_SETUP.md)), while a directly-invoked `cava` reads its
+own INI-style config at `~/.config/cava/config`.
 
-Because the two programs use different config formats, there's no single
-file both can read — but pywal16 generates a matching template for each,
-so a single `wal -i image.png` run keeps them visually in sync:
+Because the two setups source their settings from different config formats,
+there's no single file both can read — but pywal16 generates a matching
+template for each, so a single `wal -i image.png` run keeps them visually
+in sync:
 
-- `pywal/templates/colors-rmpc-theme.ron` — rmpc's embedded Cava pane
+- `pywal/templates/colors-rmpc-theme.ron` — rmpc's `Cava` pane config
 - `pywal/templates/colors-cava` — standalone `cava` (this guide)
 
 ---
@@ -106,8 +110,8 @@ and smoothing settings are all in the `[general]`, `[input]`, and
 
 **Keep in sync**: if you change these values (or the gradient stops) here,
 consider making the equivalent change in
-`pywal/templates/colors-rmpc-theme.ron` so rmpc's embedded Cava pane
-doesn't drift out of sync with standalone `cava`.
+`pywal/templates/colors-rmpc-theme.ron` so rmpc's Cava pane doesn't drift
+out of sync with standalone `cava`.
 
 ---
 
@@ -160,5 +164,5 @@ Same causes/fixes as rmpc's Cava pane — see
 
 ## Further Reading
 
-- [RMPC_SETUP.md](RMPC_SETUP.md) — rmpc's embedded Cava pane (separate config/format)
+- [RMPC_SETUP.md](RMPC_SETUP.md) — rmpc's Cava pane (separate config/format, but shells out to the real cava binary)
 - [cava Documentation](https://github.com/karlstav/cava) — Full cava config options

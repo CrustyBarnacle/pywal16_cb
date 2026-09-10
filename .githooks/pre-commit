@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Blocks commits of personal/local-only files that have no business in this repo.
+# Setup (one-time, per clone): git config core.hooksPath .githooks
+set -euo pipefail
+
+# Filename patterns that indicate a personal/local dev artifact, not project
+# content. Add to this list when a new "oops, that's my local file" happens.
+blocked_patterns=(
+    '(^|/)[^/]*_local_config$'
+    '(^|/)\.env(\..*)?$'
+    '(^|/)id_(rsa|ed25519|ecdsa)(\.pub)?$'
+    '(^|/)credentials\.json$'
+)
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$staged_files" ] && exit 0
+
+violations=()
+while IFS= read -r file; do
+    for pattern in "${blocked_patterns[@]}"; do
+        if [[ "$file" =~ $pattern ]]; then
+            violations+=("$file  (matched: $pattern)")
+            break
+        fi
+    done
+done <<< "$staged_files"
+
+if [ "${#violations[@]}" -gt 0 ]; then
+    echo "pre-commit: refusing to commit likely personal/local-only file(s):" >&2
+    for v in "${violations[@]}"; do
+        echo "  - $v" >&2
+    done
+    echo "" >&2
+    echo "If this is intentional, commit with 'git commit --no-verify'." >&2
+    exit 1
+fi
+
+exit 0

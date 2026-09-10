@@ -6,7 +6,7 @@ This guide explains how to configure **rmpc** (Rust MPD client) to sync its them
 
 ### What This Achieves
 - **rmpc UI colors** automatically match wallpaper (via generated theme)
-- **Cava visualizer** (embedded in rmpc) gradient automatically updated with wallpaper colors
+- **Cava visualizer pane** (rmpc's UI panel that shells out to the separately-installed `cava` binary) gradient automatically updated with wallpaper colors
 - All updates happen automatically when you run `wal -i image.png`
 - Note: Terminal colors are a separate pywal16 feature; refer to [DEVELOPMENT.md](DEVELOPMENT.md) for the full pywal workflow
 - Note: Want the standalone `cava` binary (outside rmpc) to match too? See [CAVA_SETUP.md](CAVA_SETUP.md)
@@ -426,7 +426,7 @@ systemctl --user status wal-update.timer
 - `~/.config/rmpc/config.ron` — Updated to point `theme:` at the symlink
 
 ### Template (in pywal16 repo)
-- `pywal/templates/colors-rmpc-theme.ron` — Template file for rmpc's embedded Cava pane
+- `pywal/templates/colors-rmpc-theme.ron` — Template file for rmpc's Cava pane (using rmpc's own config, but shelling out to the real cava binary)
 
 ---
 
