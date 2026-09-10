@@ -1,0 +1,20 @@
+#![enable(implicit_some)]
+#![enable(unwrap_newtypes)]
+#![enable(unwrap_variant_newtypes)]
+(
+    default_album_art_path: "/home/togusa/Images/default-album-art.png",
+
+    cava: (
+        bar_color: Gradient({{
+            0: "rgb({color0.rgb})",
+            12: "rgb({color1.rgb})",
+            25: "rgb({color2.rgb})",
+            37: "rgb({color3.rgb})",
+            50: "rgb({color4.rgb})",
+            62: "rgb({color5.rgb})",
+            75: "rgb({color6.rgb})",
+            87: "rgb({color7.rgb})",
+            100: "rgb({color8.rgb})",
+        }})
+    ),
+)
