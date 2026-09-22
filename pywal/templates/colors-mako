@@ -1,3 +1,4 @@
-background-color={background}
+# Set background AA for alpha as {RRGGBB}ee for 95% opacity
+background-color={background}77
 text-color={foreground}
 border-color={color1}
