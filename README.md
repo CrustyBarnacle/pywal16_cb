@@ -27,3 +27,12 @@ Terminal emulators and TTYs have their color-schemes updated in real-time with n
 [![Packaging status](https://repology.org/badge/vertical-allrepos/pywal16.svg)](https://repology.org/project/pywal16/versions)
 [![Packaging status](https://repology.org/badge/vertical-allrepos/pywal.svg)](https://repology.org/project/pywal/versions)
 
+### Integrations
+
+This fork adds setup guides for a few apps not covered by pywal16's built-in
+templates alone:
+
+- [rmpc](Integrations/RMPC_SETUP.md) — Rust MPD client, UI + embedded Cava pane
+- [cava](Integrations/CAVA_SETUP.md) — standalone cava audio visualizer
+- [mako](Integrations/MAKO_SETUP.md) — Wayland notification daemon
+

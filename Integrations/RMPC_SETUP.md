@@ -8,7 +8,7 @@ This guide explains how to configure **rmpc** (Rust MPD client) to sync its them
 - **rmpc UI colors** automatically match wallpaper (via generated theme)
 - **Cava visualizer pane** (rmpc's UI panel that shells out to the separately-installed `cava` binary) gradient automatically updated with wallpaper colors
 - All updates happen automatically when you run `wal -i image.png`
-- Note: Terminal colors are a separate pywal16 feature; refer to [DEVELOPMENT.md](DEVELOPMENT.md) for the full pywal workflow
+- Note: Terminal colors are a separate pywal16 feature, covered by pywal16's own templates, not this guide
 - Note: Want the standalone `cava` binary (outside rmpc) to match too? See [CAVA_SETUP.md](CAVA_SETUP.md)
 
 ---
@@ -152,7 +152,13 @@ rmpc reads it via the stable symlink at `~/.config/rmpc/themes/colors.ron`
 - **RGB format** — Converted from hex via pywal's `.rgb` property
 
 ### Auto-Reload
-With `enable_config_hot_reload: true`, rmpc detects when the theme file changes and reloads automatically. No need to restart rmpc.
+With `enable_config_hot_reload: true`, rmpc detects when the theme file changes and reloads automatically — this covers the main UI reliably. The Cava pane's gradient doesn't always pick up the passive file-watch reload (see [rmpc#621](https://github.com/mierak/rmpc/issues/621)); if it looks stale, push the theme explicitly instead of restarting:
+
+```bash
+rmpc remote set theme ~/.config/rmpc/themes/colors.ron
+```
+
+Confirmed working (2026-09-20) — this is what `wal-reload.sh` uses.
 
 ---
 
@@ -204,15 +210,6 @@ If you have a custom rmpc theme, you can include the pywal colors instead of rep
     default_album_art_path: "/path/to/art.png",
     // ...
 )
-```
-
-**Option 2: Keep separate theme, layer colors**
-```bash
-# Use a base theme for layout
-theme: "~/.config/rmpc/themes/my-theme.ron",
-
-# Then override cava colors in a hook script
-# (See "Extending with Hooks" below)
 ```
 
 ---
@@ -297,49 +294,9 @@ rmpc
 
 ---
 
-## Testing
-
-### Verify Theme Generation
-```bash
-# Run wal with verbose output
-wal -i ~/test.png
-
-# Check generated theme (via the stable symlink)
-cat ~/.config/rmpc/themes/colors.ron
-
-# Should show RGB values, not template variables
-# Good: rgb(14,21,32)
-# Bad: rgb({color0.rgb})
-```
-
-### Test Color Updates
-```bash
-# Update symlink to different image (recommended workflow)
-ln -sf ~/Images/Wallpaper/different-image.png ~/Images/background.png
-
-# Generate colors
-wal -i ~/Images/background.png
-
-# Check theme was updated
-stat ~/.config/rmpc/themes/colors.ron  # Should show recent timestamp
-
-# If rmpc is running, colors should update automatically via hot-reload
-# Verify by checking the generated theme file
-cat ~/.config/rmpc/themes/colors.ron | grep rgb  # Should show new RGB values
-```
-
-### Compare with Terminal
-```bash
-# After running wal, terminal AND rmpc should match
-# Terminal colors: cat ~/.cache/wal/sequences
-# rmpc theme: cat ~/.config/rmpc/themes/colors.ron
-
-# The RGB values in rmpc theme should correspond to terminal colors
-```
-
----
-
 ## Extending with Hooks
+
+Want one script that reloads sway/waybar/mako/kitty/ghostty/rmpc together, instead of hand-rolling your own? See [`Integrations/wal-reload.sh`](wal-reload.sh) — usable via `-o` the same way as the standalone example below.
 
 ### Run Custom Script After `wal`
 You can run additional commands when wal generates colors:
@@ -353,11 +310,8 @@ wal -i image.png -o ~/.local/bin/wal-post-hook.sh
 #!/bin/bash
 # Run after wal generates colors
 
-# Force rmpc to reload (usually automatic, but just in case)
-pkill -HUP rmpc
-
-# Update other apps
-polybar-msg cmd reload  # If using polybar
+# Force rmpc to reload (usually automatic, but see Auto-Reload above for the reliable path)
+rmpc remote set theme ~/.config/rmpc/themes/colors.ron
 
 # Custom integration
 # ... your logic here ...
@@ -426,25 +380,10 @@ systemctl --user status wal-update.timer
 - `~/.config/rmpc/config.ron` — Updated to point `theme:` at the symlink
 
 ### Template (in pywal16 repo)
-- `pywal/templates/colors-rmpc-theme.ron` — Template file for rmpc's Cava pane (using rmpc's own config, but shelling out to the real cava binary)
+- `pywal/templates/colors-rmpc-theme.ron` — Template file for rmpc's Cava pane (rmpc supplies the config/theme, but shells out to the standalone `cava` binary on `$PATH`)
 
 ---
 
 ## Further Reading
 
-- [CAVA_SETUP.md](CAVA_SETUP.md) — Matching colors for the standalone `cava` binary (outside rmpc)
-- [Pywal16 Architecture](DEVELOPMENT.md) — How pywal16 works
-- [rmpc Documentation](https://github.com/mierak/rmpc) — Full rmpc config options
-- [MPD Documentation](https://www.musicpd.org/) — Music Player Daemon reference
-
----
-
-## Troubleshooting Checklist
-
-- [ ] `wal` command available: `which wal`
-- [ ] Symlink exists: `ls -la ~/.config/rmpc/themes/colors.ron`
-- [ ] Theme path correct in rmpc config: `grep theme ~/.config/rmpc/config.ron`
-- [ ] Hot reload enabled: `grep enable_config_hot_reload ~/.config/rmpc/config.ron`
-- [ ] Theme has RGB values (not variables): `cat ~/.config/rmpc/themes/colors.ron | grep rgb`
-- [ ] rmpc restarted after config change: `pkill rmpc && rmpc`
-- [ ] Different wallpaper tested: `wal -i different-image.png`
+Standalone `cava` binary, mako, and the full app list live in [`Integrations/`](.) — see [README.md](../README.md). Upstream: [rmpc](https://github.com/mierak/rmpc), [MPD](https://www.musicpd.org/).

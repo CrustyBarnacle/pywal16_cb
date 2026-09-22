@@ -7,34 +7,18 @@ This guide covers matching the colors of the standalone **cava** binary
 to your wallpaper via pywal16.
 
 If you're looking for rmpc's `Cava` pane instead, see
-[RMPC_SETUP.md](RMPC_SETUP.md) — rmpc still shells out to the real `cava`
-binary under the hood (it must be installed and on `$PATH`; see
-https://rmpc.mierak.dev/configuration/cava/), but rmpc supplies its own
-config/theme for that pane rather than using `cava`'s own config file.
-That setup is covered in RMPC_SETUP.md, not here.
+[RMPC_SETUP.md](RMPC_SETUP.md). Both ultimately run the same `cava` binary
+(it must be installed and on `$PATH`), but read settings from different
+config formats — rmpc's own `~/.config/rmpc/config.ron` (RON) vs. a
+directly-invoked `cava`'s INI-style `~/.config/cava/config` — so there's no
+single file both can read. pywal16 generates a matching template for each
+(`colors-rmpc-theme.ron` and `colors-cava`), so one `wal -i image.png` run
+keeps them visually in sync.
 
 ### What This Achieves
 - Standalone `cava`'s color gradient automatically matches your wallpaper
 - Updates happen automatically when you run `wal -i image.png`
 - Stays visually in sync with rmpc's `Cava` pane, if you use both
-
----
-
-## Why Two Separate Configs?
-
-Both rmpc's `Cava` pane and this guide's standalone setup ultimately run the
-same `cava` binary — but rmpc feeds it settings from its own
-`~/.config/rmpc/config.ron` (RON format; see the `cava: (...)` block in
-[RMPC_SETUP.md](RMPC_SETUP.md)), while a directly-invoked `cava` reads its
-own INI-style config at `~/.config/cava/config`.
-
-Because the two setups source their settings from different config formats,
-there's no single file both can read — but pywal16 generates a matching
-template for each, so a single `wal -i image.png` run keeps them visually
-in sync:
-
-- `pywal/templates/colors-rmpc-theme.ron` — rmpc's `Cava` pane config
-- `pywal/templates/colors-cava` — standalone `cava` (this guide)
 
 ---
 
@@ -164,5 +148,4 @@ Same causes/fixes as rmpc's Cava pane — see
 
 ## Further Reading
 
-- [RMPC_SETUP.md](RMPC_SETUP.md) — rmpc's Cava pane (separate config/format, but shells out to the real cava binary)
-- [cava Documentation](https://github.com/karlstav/cava) — Full cava config options
+rmpc, mako, and the full app list live in [`Integrations/`](.) — see [README.md](../README.md). Upstream: [cava](https://github.com/karlstav/cava).
