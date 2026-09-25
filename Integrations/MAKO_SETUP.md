@@ -261,7 +261,7 @@ makoctl history
 
 ## Extending with Hooks
 
-Want one script that reloads sway/waybar/mako/kitty/ghostty/rmpc together, instead of hand-rolling your own? See [`Integrations/wal-reload.sh`](wal-reload.sh) — usable via `-o` the same way as the standalone example below.
+Want one script that reloads sway/mako/kitty/ghostty/rmpc and syncs cava's config together, instead of hand-rolling your own? See [`Integrations/wal-reload.sh`](wal-reload.sh) — usable via `-o` the same way as the standalone example below. (waybar isn't signaled by default — see the script's header comment on `swaybar_command` vs. plain `exec waybar`.)
 
 ### Run Custom Script After `wal`
 

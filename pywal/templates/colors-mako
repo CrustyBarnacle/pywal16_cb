@@ -1,4 +1,4 @@
-# Set background AA for alpha as {RRGGBB}ee for 95% opacity
+# Append a 2-digit hex alpha suffix after background-color for opacity, e.g. ee for ~95%
 background-color={background}77
 text-color={foreground}
 border-color={color1}

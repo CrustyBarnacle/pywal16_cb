@@ -9,3 +9,4 @@ build/*
 __pycache__/*
 .claude/
 mpd_client_local_config
+packaging/*
