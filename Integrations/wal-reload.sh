@@ -85,23 +85,25 @@ sync_cava_config() {
     mkdir -p "$(dirname "$static_config")"
     touch "$static_config"
 
-    if grep -qF "$begin_marker" "$static_config"; then
-        # Replace the marked block in place, wherever it sits in the file.
-        awk -v begin="$begin_marker" -v end="$end_marker" -v genfile="$generated" '
-            $0 == begin { print; while ((getline line < genfile) > 0) print line; skip=1; next }
-            $0 == end { print; skip=0; next }
-            skip { next }
-            { print }
-        ' "$static_config" >"${static_config}.tmp" && mv "${static_config}.tmp" "$static_config"
-    else
-        # First run: no markers yet, append a fresh marked block.
-        {
-            echo ""
-            echo "$begin_marker"
-            cat "$generated"
-            echo "$end_marker"
-        } >>"$static_config"
-    fi
+    # Strip everything from any BEGIN marker through any END marker,
+    # however many (possibly stray/duplicate, e.g. from manual edits)
+    # exist - self-healing regardless of prior state, rather than
+    # assuming at most one clean pair. Content outside any marker span is
+    # always preserved.
+    awk -v begin="$begin_marker" -v end="$end_marker" '
+        $0 == begin { inblock=1; next }
+        $0 == end { inblock=0; next }
+        inblock { next }
+        { print }
+    ' "$static_config" >"${static_config}.tmp" && mv "${static_config}.tmp" "$static_config"
+
+    # Always append one fresh block with the current colors.
+    {
+        echo ""
+        echo "$begin_marker"
+        cat "$generated"
+        echo "$end_marker"
+    } >>"$static_config"
 }
 
 reload_sway

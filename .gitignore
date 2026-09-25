@@ -10,3 +10,4 @@ __pycache__/*
 .claude/
 mpd_client_local_config
 packaging/*
+claude*.md
