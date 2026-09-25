@@ -1,4 +1,4 @@
-## This project is a 16 colors fork of [pywal](https://github.com/dylanaraps/pywal)
+## This project is a fork of [pywal16](https://github.com/eylles/pywal16), itself a 16 colors fork of [pywal](https://github.com/dylanaraps/pywal)
 <h3 align="center"><img src="https://i.imgur.com/5WgMACe.gif" width="200px"></h3>
 <p align="center">Generate and change color-schemes on the fly.</p>
 
@@ -24,8 +24,7 @@ Terminal emulators and TTYs have their color-schemes updated in real-time with n
 
 ### More: \[[Installation](https://github.com/eylles/pywal16/wiki/Installation)] \[[Getting Started](https://github.com/eylles/pywal16/wiki/Getting-Started)] \[[Customization](https://github.com/eylles/pywal16/wiki/Customization)] \[[Wiki](https://github.com/eylles/pywal16/wiki)] \[[Screenshots](https://www.reddit.com/r/unixporn/search?q=wal&restrict_sr=on&sort=relevance&t=all)] \[[Extras](https://github.com/eylles/pywal-extra)]
 
-[![Packaging status](https://repology.org/badge/vertical-allrepos/pywal16.svg)](https://repology.org/project/pywal16/versions)
-[![Packaging status](https://repology.org/badge/vertical-allrepos/pywal.svg)](https://repology.org/project/pywal/versions)
+[![Packaging status]TBD - (Place holder)
 
 ### Integrations
 
