@@ -4,15 +4,10 @@
 # Per-app behavior (researched 2026-09-20, see RMPC_SETUP.md/CAVA_SETUP.md
 # for background):
 #   sway     - swaymsg reload, always safe
-#   waybar   - NOT signaled here. If launched via sway's `swaybar_command`
-#              (bar { swaybar_command waybar }), sway supervises that
-#              process directly and already kills+respawns it as part of
-#              `swaymsg reload` - sending SIGUSR2 on top of that races/
-#              conflicts with sway's own supervision and kills the bar
-#              instead of reloading it (confirmed 2026-09-24). If you
-#              instead launch waybar via a plain `exec waybar` (not under
-#              sway's bar supervision), uncomment reload_waybar below -
-#              that's the case SIGUSR2 was originally written for.
+#   waybar   - NOT signaled here.
+#              If you instead launch waybar via a plain `exec waybar`
+#              (not under sway's bar supervision), uncomment reload_waybar
+#              below - that's the case SIGUSR2 was originally written for.
 #   mako     - makoctl reload, no known issues
 #   kitty    - SIGUSR1 per instance; only affects already-running windows
 #   ghostty  - SIGUSR2 ONLY - any other signal crashes it (ghostty >= 1.2)
@@ -20,8 +15,7 @@
 #   rmpc Cava pane - passive file-watch hot-reload doesn't reliably pick up
 #              cava options (github.com/mierak/rmpc/issues/621), but
 #              `rmpc remote set theme <path>` is an explicit push that's
-#              confirmed working (tested 2026-09-20). Used below instead of
-#              relying on the file watcher.
+#              confirmed working (tested 2026-09-20).
 #   standalone cava - no reload signal, restart-only. Its INI format has
 #              no include=-style merge directive (unlike mako), so the
 #              generated colors-cava template is colors-only (just
@@ -30,8 +24,6 @@
 #              every run, rather than symlinking the whole file. The
 #              markers make the splice safe regardless of where [color]
 #              sits in the file - no positional convention to rely on.
-#              Restart cava manually after this to pick up the change
-#              (see CAVA_SETUP.md).
 
 set -uo pipefail
 
@@ -96,6 +88,10 @@ sync_cava_config() {
         inblock { next }
         { print }
     ' "$static_config" >"${static_config}.tmp" && mv "${static_config}.tmp" "$static_config"
+
+    # Drop any trailing blank lines left behind by the strip above, so the
+    # separator blank line below doesn't accumulate one more per run.
+    sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$static_config"
 
     # Always append one fresh block with the current colors.
     {

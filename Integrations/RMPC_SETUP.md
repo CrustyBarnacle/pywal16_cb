@@ -128,7 +128,7 @@ rmpc reads it via the stable symlink at `~/.config/rmpc/themes/colors.ron`
 #![enable(unwrap_newtypes)]
 #![enable(unwrap_variant_newtypes)]
 (
-    default_album_art_path: "/home/togusa/Images/default-album-art.png",
+    default_album_art_path: "~/Images/default-album-art",
 
     cava: (
         bar_color: Gradient({
